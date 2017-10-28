@@ -14,7 +14,7 @@ repositories {
 
 //Enter your command line arguments here
 run {
-    args = ['/home/dms/data/Uni/TUGraz/Semester17/Digital Libraries/VAST_Papers/Vast-2006']
+    args = ['/home/dms/data/Uni/TUGraz/Semester17/Digital Libraries/VAST_Papers/']
 }
 
 

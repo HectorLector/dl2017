@@ -5,26 +5,24 @@ import org.apache.pdfbox.text.PDFTextStripper;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-public class PdfTextExtractor {
+class PdfTextExtractor {
 
-  public static Map<File, String> extractAllText(File folder){
+  static List<File> extractAllText(File folder){
 
-    Map<File, String> extractedTexts = new HashMap<>();
+    List<File> extractedTexts = new ArrayList<>();
 
-    for (final File fileEntry : folder.listFiles()) {
-      if (fileEntry.isFile() &&
-          fileEntry.getName().toLowerCase().endsWith(Constants.PDF_FILE_EXTENSION)) {
+    List<File> allPdfFiles = new ArrayList<>();
+    FileHandler.getAllFilesRecursive(folder, Constants.PDF_FILE_EXTENSION, allPdfFiles);
+
+    for (final File fileEntry : allPdfFiles) {
 
         System.out.println("Extracting text from: " + fileEntry.getAbsolutePath());
-
         String text = extractText(fileEntry);
-        extractedTexts.put(fileEntry, text);
-      } else {
-        System.out.println("Ignoring file/directory: " + fileEntry.getAbsolutePath());
-      }
+        File outFile = FileHandler.writeExtractedTextToFile(fileEntry, text);
+        extractedTexts.add(outFile);
     }
     return extractedTexts;
   }

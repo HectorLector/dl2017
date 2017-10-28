@@ -2,7 +2,6 @@ package org.stiazla;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 public class Main {
   public static void main(String[] args){
@@ -18,13 +17,20 @@ public class Main {
       File folder = new File(folderPath);
       if(folder.isDirectory() && folder.canRead()){
 
-        //1.) Extract Text from PDF
-        Map<File, String> extractedTexts = PdfTextExtractor.extractAllText(folder);
-        //2.) Save Text files in extracted directory
-        List<File> textFiles = FileHandler.writeExtractedTextToFiles(extractedTexts);
-        //3.) Index Text Files with Lucene
+        //1.) Extract Text from PDF and Save them in Output directory
+        List<File> textFiles = PdfTextExtractor.extractAllText(folder);
+
+        //2.) Index Text Files with Lucene
         int indexSize = IndexHandler.indexFiles(textFiles);
         System.out.println(String.format("INDEX CREATED in %s, SIZE = %d", Constants.INDEX_OUT_DIR, indexSize));
+
+        //3.) Search
+        try {
+          SearchHandler.searchIndex(Constants.INDEX_OUT_DIR, "science", 1000);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+
       } else{
         System.out.println("Cannot read from directory: " + folderPath);
       }

@@ -13,10 +13,14 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 class SearchHandler {
 
-  static void searchIndex(String indexDir, String queryStr, int maxHits) throws Exception {
+  static List<String> searchIndex(String indexDir, String queryStr, int maxHits) throws Exception {
+
+    List<String> results = new ArrayList<>();
 
     Directory directory = FSDirectory.open(Paths.get(indexDir));
 
@@ -31,16 +35,16 @@ class SearchHandler {
 
     ScoreDoc[] hits = topDocs.scoreDocs;
     long totalHits = topDocs.totalHits;
-    System.out.println(String.format("Found %d total hits for: '%s' in the following files:", totalHits, queryStr));
 
     for (ScoreDoc hit : hits) {
       int docId = hit.doc;
       Document d = searcher.doc(docId);
-      System.out.println(d.get(Constants.FILE_NAME));
+      String result = String.format("File: %s; Score: %f", d.get(Constants.FILE_NAME), hit.score);
+      results.add(result);
     }
 
-    System.out.println("Found " + hits.length);
-
+    System.out.println(String.format("Found %d total hits for: '%s' in the following files:", totalHits, queryStr));
+    return results;
   }
 
 }

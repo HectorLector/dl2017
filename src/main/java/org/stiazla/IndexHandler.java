@@ -59,7 +59,7 @@ class IndexHandler {
 
     Document doc = new Document();
     doc.add(new TextField(Constants.CONTENTS, new FileReader(file)));
-    doc.add(new StringField(Constants.FILE_NAME, file.getName(), Field.Store.YES));
+    doc.add(new StringField(Constants.FILE_NAME, file.getAbsolutePath(), Field.Store.YES));
 
     return doc;
   }

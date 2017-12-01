@@ -12,31 +12,45 @@ repositories {
     mavenCentral()
 }
 
+buildscript {
+    repositories { jcenter() }
+    dependencies { // fatjar
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4' }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+shadowJar {
+    baseName = project.name
+    classifier = null
+    version = project.version
+}
+
+
 //Enter your command line arguments here
 run {
-    args = ['/home/dms/data/Uni/TUGraz/Semester17/Digital Libraries/VAST_Papers/']
+    args = ['/pathToPdfFiles/', 'no', 'Earth']
 }
 
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    compile 'commons-io:commons-io:2.6'
-
-    compile 'org.apache.pdfbox:pdfbox:2.0.7'
-
     compile group: 'org.apache.lucene', name: 'lucene-core', version: '7.1.0'
     compile group: 'org.apache.lucene', name: 'lucene-codecs', version: '7.1.0'
     compile group: 'org.apache.lucene', name: 'lucene-analyzers-common', version: '7.1.0'
     compile group: 'org.apache.lucene', name: 'lucene-queries', version: '7.1.0'
     compile group: 'org.apache.lucene', name: 'lucene-queryparser', version: '7.1.0'
+
+    compile 'commons-io:commons-io:2.6'
+    compile 'org.apache.pdfbox:pdfbox:2.0.7'
+
 }
 
 
 jar {
-    from {configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest {
         attributes(
                 'Main-Class': 'org.stiazla.Main')
     }
+    from {configurations.compile.collect {it.isDirectory() ?  it : zipTree(it) } }
 }
